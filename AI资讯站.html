@@ -1512,20 +1512,20 @@ function autoCat(item) {
   if (/arxiv/i.test(feedName)) { item._aiCat = 'paper'; return; }
   const t = (item.title || '') + ' ' + (item.description || '');
   const designRx = /设计|界面|交互|原型|组件|生图|绘图|图像生成|AI绘画|AI作图|文生图|文生视频|图生视频|ux|ui\b|midjourney|stable.diffusion|dall.e|firefly|canva|ideogram|flux\b|kling|runway|pika|sora|design|creative|illustration|figma|sketch\b/i;
-  // ai-products 来源只允许被设计关键词覆盖，其余保持原分类
   if (item._aiCat === 'ai-products') {
     if (designRx.test(t)) item._aiCat = 'design';
     return;
   }
+  // 开源优先于模型：避免"开源 Llama"被归入模型而非开源
+  if (/开源|开放.*权重|开放.*代码|开放.*模型|权重.*发布|open.?source|open.*weight|release.*weight|apache.*licen|mit.*licen/i.test(t))
+    { item._aiCat = 'opensource'; return; }
   if (/模型|大模型|llm|gpt|claude|gemini|grok|llama|deepseek|minimax|kimi|文心|通义|混元|spark|mistral|qwen|发布.*版|更新.*版/i.test(t))
     { item._aiCat = 'ai-models'; return; }
-  if (/论文|研究|实验|突破|学术|paper|research|study|benchmark/i.test(t))
+  if (/论文|研究|实验|突破|学术|arXiv|preprint|paper|research|study|benchmark|dataset|评测|评估|性能对比/i.test(t))
     { item._aiCat = 'paper'; return; }
   if (/融资|投资|收购|估值|IPO|亿美元|亿元|上市|fund|invest|acqui|billion|million/i.test(t))
     { item._aiCat = 'funding'; return; }
-  if (/开源|开放.*权重|开放.*代码|开放.*模型|huggingface.*发布|github.*发布|open.?source|open.*weight|release.*weight|apache.*licen|mit.*licen/i.test(t))
-    { item._aiCat = 'opensource'; return; }
-  if (/教程|技巧|提示词|玩法|攻略|入门|指南|实战|速成|手册|秘籍|用法|最佳实践|tutorial|guide|tips?\b|how.?to|prompt.*engineer|cheat.?sheet/i.test(t))
+  if (/教程|技巧|提示词|玩法|攻略|入门|指南|实战|速成|手册|秘籍|用法|最佳实践|如何.*使用|怎么用|操作方法|tutorial|guide|tips?\b|how.?to|prompt.*engineer|cheat.?sheet|workflow/i.test(t))
     { item._aiCat = 'tip'; return; }
   if (designRx.test(t)) { item._aiCat = 'design'; return; }
   if (/工具|产品|应用|上线|功能|插件|推出|上架|内测|公测|接入|搭载|集成|开放.*使用|plugin|app|feature|launch|release|update|introduc|announc/i.test(t))
