@@ -133,15 +133,15 @@
     /* ── Daily 三列布局 ── */
     .main.daily-mode { padding: 0; overflow: hidden; display: flex; }
     .daily-archive-col {
-      width: 107px;
-      min-width: 107px;
+      width: 88px;
+      min-width: 88px;
       border-right: 1px solid var(--border);
       background: var(--sidebar-bg);
       overflow-y: auto;
       display: flex;
       flex-direction: column;
-      align-items: flex-start;
-      text-align: left;
+      align-items: stretch;
+      text-align: center;
       scrollbar-width: thin;
       scrollbar-color: var(--border) transparent;
     }
@@ -156,10 +156,10 @@
     .daily-content-col::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
 
     .archive-panel-hd {
-      padding: 14px 14px 6px;
+      padding: 14px 8px 6px;
       font-size: 10px; font-weight: 700;
       letter-spacing: 0.1em; text-transform: uppercase;
-      color: var(--muted); text-align: left;
+      color: var(--muted); text-align: center;
     }
     .archive-month-group { margin-bottom: 0; }
     .archive-month-group + .archive-month-group {
@@ -168,25 +168,25 @@
       border-top: 1px solid var(--border);
     }
     .archive-month-label {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 0 6px 4px;
+      display: flex; justify-content: center; align-items: center; gap: 4px;
+      padding: 0 4px 4px;
       font-size: 9px; font-weight: 700;
       color: var(--muted); letter-spacing: 0.03em;
       cursor: pointer; user-select: none;
-      transition: color 0.1s;
+      transition: color 0.1s; text-align: center;
     }
     .archive-month-label:hover { color: var(--accent); }
     .archive-month-label-static {
-      padding: 0 6px 4px;
+      padding: 0 4px 4px;
       font-size: 9px; font-weight: 700;
-      color: var(--muted); letter-spacing: 0.03em; text-align: left;
+      color: var(--muted); letter-spacing: 0.03em; text-align: center;
     }
     .archive-toggle { font-size: 9px; color: var(--muted); transition: transform 0.2s; display: inline-block; }
     .archive-month-group.collapsed .archive-toggle { transform: rotate(-90deg); }
     .archive-month-group.collapsed .archive-month-rows { display: none; }
     .archive-day-row {
-      display: flex; align-items: center;
-      padding: 8px 6px 8px 10px;
+      display: flex; align-items: center; justify-content: center;
+      padding: 8px 4px;
       font-size: 13px; font-weight: 500; color: var(--text);
       cursor: pointer;
       border-radius: 6px;
