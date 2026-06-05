@@ -947,7 +947,7 @@ async function fetchAiHot(path) {
 }
 
 function aiHotToCard(item) {
-  const CAT_COLOR = { 'ai-models':'#bc8cff','ai-products':'#3fb950','industry':'#ffa657','paper':'#58a6ff','tip':'#d29922' };
+  const CAT_COLOR = { 'ai-models':'#bc8cff','ai-products':'#3fb950','industry':'#ffa657','paper':'#58a6ff','tip':'#d29922','opensource':'#3fb9b9' };
   return {
     title:       item.title || '',
     link:        item.url || '',
@@ -969,6 +969,10 @@ function genRecReason(item) {
     return 'AI 产品落地进展，设计与工程实践的参考样本。';
   if (cat === 'paper' || /研究|论文|技术突破|算法|实验/.test(t))
     return '前沿学术动态，把握 AI 技术走向的重要信号。';
+  if (cat === 'tip' || /教程|技巧|提示词|攻略|指南|实战/.test(t))
+    return '实用技巧与操作指南，快速提升 AI 使用效率的捷径。';
+  if (cat === 'opensource' || /开源|开放权重|open.?source/.test(t))
+    return '开源生态重要动态，推动 AI 技术民主化的关键进展。';
   if (cat === 'industry' || /融资|投资|收购|估值|IPO|亿元|亿美元/.test(t))
     return '行业资本动向，AI 商业化进程的观察窗口。';
   if (/OpenAI|谷歌|Google|Anthropic|Meta|微软|Microsoft|苹果|Apple/.test(t))
@@ -1521,6 +1525,8 @@ function autoCat(item) {
     { item._aiCat = 'funding'; return; }
   if (/开源|开放.*权重|开放.*代码|开放.*模型|huggingface.*发布|github.*发布|open.?source|open.*weight|release.*weight|apache.*licen|mit.*licen/i.test(t))
     { item._aiCat = 'opensource'; return; }
+  if (/教程|技巧|提示词|玩法|攻略|入门|指南|实战|速成|手册|秘籍|用法|最佳实践|tutorial|guide|tips?\b|how.?to|prompt.*engineer|cheat.?sheet/i.test(t))
+    { item._aiCat = 'tip'; return; }
   if (designRx.test(t)) { item._aiCat = 'design'; return; }
   if (/工具|产品|应用|上线|功能|插件|推出|上架|内测|公测|接入|搭载|集成|开放.*使用|plugin|app|feature|launch|release|update|introduc|announc/i.test(t))
     { item._aiCat = 'ai-products'; return; }
@@ -2166,8 +2172,8 @@ function switchAllCat(cat) {
   if (!tab) return;
   const cached = cache['all'];
   if (cached) {
-    // 确保所有条目都有分类（AI HOT 空 category 或 RSS 来源均兜底）
-    if (cat !== 'all') cached.items.forEach(autoCat);
+    // 每次切换 pill 重跑 autoCat，确保新分类（tip/opensource 等）条目被识别
+    cached.items.forEach(autoCat);
     renderTab(tab, cached.items, cached.feedErrors || [], cached.aiHotData);
   } else switchTab('all');
 }
