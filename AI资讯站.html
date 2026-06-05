@@ -266,13 +266,13 @@
     .section-title { font-size: 19px; font-weight: 700; }
     .section-meta { font-size: 11px; color: var(--muted); }
 
-    /* ── Source pills ── */
+    /* ── Source line ── */
     .source-pills {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
+      font-size: 11px;
+      color: var(--muted);
       margin-bottom: 18px;
       margin-top: -6px;
+      line-height: 1.6;
     }
     .pill {
       font-size: 11px;
@@ -1672,9 +1672,7 @@ function renderTab(tab, items, feedErrors = []) {
     ? `<div class="error-pill">⚠ ${feedErrors.join('、')} 加载失败</div>`
     : '';
 
-  const sourcePills = tab.feeds.map(f =>
-    `<span class="pill">${f.name}</span>`
-  ).join('');
+  const sourcePills = '来源：' + tab.feeds.map(f => f.name).join(' | ');
 
   // 日报：三列布局（侧边栏 | 存档列表 | 内容）
   if (tab.layout === 'daily') {
