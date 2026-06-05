@@ -1295,21 +1295,32 @@ async function prefetchDailyDates() {
   });
 }
 
+function getDailyBody() {
+  return document.getElementById('dailyBody') || (() => {
+    const col = document.getElementById('dailyContentCol');
+    if (!col) return null;
+    const div = document.createElement('div');
+    div.id = 'dailyBody';
+    col.appendChild(div);
+    return div;
+  })();
+}
+
 async function loadDailyDate(date) {
   archiveActiveDate = date;
   renderArchivePanel();
-  const contentCol = document.getElementById('dailyContentCol');
+  const body = getDailyBody();
   const cacheKey = date || new Date().toISOString().slice(0, 10);
   if (dailyCache[cacheKey]) {
-    if (contentCol) contentCol.innerHTML = renderAiHotDaily(dailyCache[cacheKey]);
+    if (body) body.innerHTML = renderAiHotDaily(dailyCache[cacheKey]);
     return;
   }
-  if (contentCol) contentCol.innerHTML = `<div class="loading-state"><div class="spinner"></div><span>加载中...</span></div>`;
+  if (body) body.innerHTML = `<div class="loading-state"><div class="spinner"></div><span>加载中...</span></div>`;
   const apiPath = date ? `/daily/${date}` : '/daily';
   const aiHotData = await fetchAiHot(apiPath);
   if (aiHotData?.sections) {
     dailyCache[cacheKey] = aiHotData;
-    if (contentCol) contentCol.innerHTML = renderAiHotDaily(aiHotData);
+    if (body) body.innerHTML = renderAiHotDaily(aiHotData);
   }
 }
 
@@ -1680,9 +1691,10 @@ function renderTab(tab, items, feedErrors = []) {
     const newsHtml = arguments[3]?.sections
       ? renderAiHotDaily(arguments[3])
       : `${errorBanner}${renderDailyNewspaper(items)}`;
+    const dailySourceLine = `<div class="source-pills" style="margin-bottom:12px">${sourcePills}</div>`;
     main.innerHTML = `
       <div class="daily-archive-col" id="archiveCol"></div>
-      <div class="daily-content-col" id="dailyContentCol">${newsHtml}</div>`;
+      <div class="daily-content-col" id="dailyContentCol">${dailySourceLine}<div id="dailyBody">${newsHtml}</div></div>`;
     renderArchiveInCol();
     return;
   }
