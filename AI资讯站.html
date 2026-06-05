@@ -1482,7 +1482,7 @@ function renderTitle(item, cls = '') {
 // 提取关键词标签（来自分类、标题、原文）
 function extractTags(item) {
   const tags = [];
-  const CAT_ZH = { 'ai-models': '大模型', 'ai-products': 'AI产品', 'industry': '行业', 'paper': '论文', 'design': '设计', 'funding': '融资' };
+  const CAT_ZH = { 'ai-models': '大模型', 'ai-products': 'AI产品', 'industry': '行业', 'paper': '论文', 'design': '设计', 'funding': '融资', 'tip': '技巧', 'opensource': '开源' };
   if (item._aiCat && CAT_ZH[item._aiCat]) tags.push(CAT_ZH[item._aiCat]);
   const t = (item.title || '') + ' ' + (item.titleOriginal || '');
   [['GPT','GPT'],['Claude','Claude'],['Gemini','Gemini'],['Llama','Llama'],
@@ -1502,11 +1502,10 @@ function extractTags(item) {
 }
 
 function autoCat(item) {
-  // industry/tip/ai-products 允许重新细分；ai-models/paper 已足够精确则跳过
-  if (item._aiCat && !['industry', 'tip', 'ai-products'].includes(item._aiCat)) return;
+  // tip 直接继承 AI HOT 分类，不重新细分；industry/ai-products 允许细分
+  if (item._aiCat && !['industry', 'ai-products'].includes(item._aiCat)) return;
   const feedName = item._feed?.name || '';
-  // 来源即分类
-  if (/arxiv/i.test(feedName))                    { item._aiCat = 'paper';   return; }
+  if (/arxiv/i.test(feedName)) { item._aiCat = 'paper'; return; }
   const t = (item.title || '') + ' ' + (item.description || '');
   const designRx = /设计|界面|交互|原型|组件|生图|绘图|图像生成|AI绘画|AI作图|文生图|文生视频|图生视频|ux|ui\b|midjourney|stable.diffusion|dall.e|firefly|canva|ideogram|flux\b|kling|runway|pika|sora|design|creative|illustration|figma|sketch\b/i;
   // ai-products 来源只允许被设计关键词覆盖，其余保持原分类
@@ -1520,6 +1519,8 @@ function autoCat(item) {
     { item._aiCat = 'paper'; return; }
   if (/融资|投资|收购|估值|IPO|亿美元|亿元|上市|fund|invest|acqui|billion|million/i.test(t))
     { item._aiCat = 'funding'; return; }
+  if (/开源|开放.*权重|开放.*代码|开放.*模型|huggingface.*发布|github.*发布|open.?source|open.*weight|release.*weight|apache.*licen|mit.*licen/i.test(t))
+    { item._aiCat = 'opensource'; return; }
   if (designRx.test(t)) { item._aiCat = 'design'; return; }
   if (/工具|产品|应用|上线|功能|插件|推出|上架|内测|公测|接入|搭载|集成|开放.*使用|plugin|app|feature|launch|release|update|introduc|announc/i.test(t))
     { item._aiCat = 'ai-products'; return; }
@@ -1719,7 +1720,8 @@ function renderTab(tab, items, feedErrors = []) {
     { label: '模型', val: 'ai-models' },
     { label: '设计', val: 'design' },
     { label: '行业', val: 'industry' },
-    { label: '融资', val: 'funding' },
+    { label: '技巧', val: 'tip' },
+    { label: '开源', val: 'opensource' },
     { label: '论文', val: 'paper' },
   ];
   const catPillsHtml = tab.id === 'all' ? `
